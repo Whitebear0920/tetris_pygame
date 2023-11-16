@@ -22,3 +22,4 @@ print("還是白熊: 剛剛是說謊話")
 
 print("我才不會說謊呢!")
 
+print("test test")
