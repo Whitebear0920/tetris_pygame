@@ -5,6 +5,7 @@ from sys import exit
 from game import Game
 
 from score import Score
+from preview import Preview
 
 class Main:
     def __init__(self):
@@ -19,6 +20,7 @@ class Main:
         self.game = Game()
         
         self.score  = Score()
+        self.preview = Preview()
 
     def run(self):
         while(True):
@@ -30,6 +32,7 @@ class Main:
             self.Dispay_Surface.fill(Gray) #設定背景顏色
             self.game.run()
             self.score.run()
+            self.preview.run()
             #updatating the game
             pygame.display.update()
             self.clock.tick() #控制遊戲幀數
