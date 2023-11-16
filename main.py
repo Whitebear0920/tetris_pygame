@@ -12,3 +12,4 @@ for i in range(100):
 
 print(my_list)
 
+print("聽說白熊是帥哥呢!")
