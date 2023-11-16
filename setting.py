@@ -15,4 +15,8 @@ Score_Height_Fraction = 1 - Preview_Height_Fraction # 30% 的高
 
 #視窗(window)
 Padding = 20 #視窗邊框與遊戲畫面間的距離
-Window_width = Game_Width 
+Window_width = Game_Width + SideBar_Width + Padding * 3
+Window_Height = Game_Width + Game_Height + Padding * 2 
+
+#Game Behaviour
+
