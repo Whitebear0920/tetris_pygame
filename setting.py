@@ -21,7 +21,7 @@ Window_Height = Game_Height + Padding * 2
 Update_Start_Speed = 800
 Move_Wait_Time = 200
 Rotate_Wait_Time = 200
-Block_Offset = pygame.Vector2(Columns // 2, -1)
+Block_Offset = pygame.Vector2(Columns // 2, 5)
 
 #Colors
 Yellow = "#f1e60d"
@@ -33,3 +33,16 @@ Cyan = "#6cc6d9"
 Orange = "#f07e13"
 Gray = "#262626"
 Line_Color = "#ffffff"
+
+
+#shapes
+
+Tetorminos = {
+    "T" : {"shape" : [(0,0), (-1,0), (1,0), (0,-1)], "color":Purple},
+    "O" : {"shape" : [(0,0), (0,-1), (1,0), (1,-1)], "color":Yellow},
+    "J" : {"shape" : [(0,0), (0,-1), (0,1), (-1,1)], "color":Blue},
+    "L" : {"shape" : [(0,0), (0,-1), (0,1), (1,1)], "color":Orange},
+    "I" : {"shape" : [(0,0), (0,-1), (0,-2), (0,1)], "color":Cyan},
+    "S" : {"shape" : [(0,0), (-1,0), (0,-1), (1,-1)], "color":Green},
+    "Z" : {"shape" : [(0,0), (1,0), (0,-1), (-1,-1)], "color":Red}
+}

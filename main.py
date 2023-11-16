@@ -3,7 +3,6 @@ from sys import exit
 
 # Components
 from game import Game
-
 from score import Score
 from preview import Preview
 
