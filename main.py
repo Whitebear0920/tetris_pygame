@@ -13,3 +13,5 @@ for i in range(100):
 print(my_list)
 
 print("聽說白熊是帥哥呢!")
+
+print("還是白熊: 剛剛是說謊話")
