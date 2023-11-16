@@ -1,6 +1,11 @@
 from setting import *
 from sys import exit
 
+# Components
+from game import Game
+
+from score import Score
+
 class Main:
     def __init__(self):
         
@@ -10,6 +15,11 @@ class Main:
         self.clock = pygame.time.Clock() #遊戲時刻
         pygame.display.set_caption("Tetris") #設定視窗標題名稱
 
+        #components 
+        self.game = Game()
+        
+        self.score  = Score()
+
     def run(self):
         while(True):
             for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
@@ -18,7 +28,8 @@ class Main:
                     exit()
             #display
             self.Dispay_Surface.fill(Gray) #設定背景顏色
-            
+            self.game.run()
+            self.score.run()
             #updatating the game
             pygame.display.update()
             self.clock.tick() #控制遊戲幀數
