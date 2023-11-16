@@ -17,8 +17,7 @@ class Main:
         pygame.display.set_caption("Tetris") #設定視窗標題名稱
 
         #components 
-        self.game = Game()
-        
+        self.game = Game() 
         self.score  = Score()
         self.preview = Preview()
 
@@ -31,6 +30,7 @@ class Main:
             #display
             self.Dispay_Surface.fill(Gray) #設定背景顏色
             self.game.run()
+            self.game.draw_grid()
             self.score.run()
             self.preview.run()
             #updatating the game
