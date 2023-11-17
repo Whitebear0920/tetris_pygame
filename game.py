@@ -79,15 +79,12 @@ class Block(pygame.sprite.Sprite):
 
         #position
         self.pos = pygame.Vector2(pos) + Block_Offset
-        x = self.pos.x * Cell_Size
-        y = self.pos.y * Cell_Size
-        self.rect = self.image.get_rect(topleft = (x, y))
+        # x = self.pos.x * Cell_Size
+        # y = self.pos.y * Cell_Size
+        self.rect = self.image.get_rect(topleft = self.pos * Cell_Size)
 
     def update(self):
-        
-        x = self.pos.x * Cell_Size
-        y = self.pos.y * Cell_Size
-        self.rect = self.image.get_rect(topleft = (x, y))
-
+        # self.rect = self.image.get_rect(topleft = self.pos * Cell_Size)
+        self.rect.topleft = self.pos * Cell_Size # 兩句話是一樣的意思
 
 
