@@ -3,7 +3,6 @@ from random import choice
 from setting import * 
 from timer import Timer
 class Game:
-
     def __init__(self):
 
         #general setup
@@ -14,6 +13,9 @@ class Game:
         
         #lines
         self.line_surface = self.surface.copy()
+        self.line_surface.fill((0, 255, 0))
+        self.line_surface.set_colorkey((0, 255, 0))
+        self.line_surface.set_alpha(120)
         
         #tetromino
         self.tetromino = Tetromino(choice(list(Tetorminos.keys())), self.sprites)
@@ -29,7 +31,6 @@ class Game:
             timer.update()
 
     def move_down(self):
-        print("timer")
         self.tetromino.move_down()
 
 
@@ -44,10 +45,16 @@ class Game:
     def run(self):
         #update
         self.tmier_update()
+        self.sprites.update()
 
-        #畫外框
-        self.display_surface.blit(self.surface, (Padding, Padding))
+        # #drawing
+        self.surface.fill(Gray)
         self.sprites.draw(self.surface)
+
+        self.draw_grid()
+        self.display_surface.blit(self.surface, (Padding, Padding))
+        
+        #畫外框
         pygame.draw.rect(self.display_surface, Line_Color, self.rect, 2, 2)
 
 class Tetromino:
@@ -76,6 +83,11 @@ class Block(pygame.sprite.Sprite):
         y = self.pos.y * Cell_Size
         self.rect = self.image.get_rect(topleft = (x, y))
 
-    
+    def update(self):
+        
+        x = self.pos.x * Cell_Size
+        y = self.pos.y * Cell_Size
+        self.rect = self.image.get_rect(topleft = (x, y))
+
 
 

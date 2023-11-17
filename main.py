@@ -6,6 +6,7 @@ from game import Game
 from score import Score
 from preview import Preview
 
+
 class Main:
     def __init__(self):
         
