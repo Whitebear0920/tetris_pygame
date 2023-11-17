@@ -22,7 +22,8 @@ class Game:
 
         #timer
         self.timers = {
-            "vertical move" : Timer(Update_Start_Speed, True, self.move_down)
+            "vertical move" : Timer(Update_Start_Speed, True, self.move_down),
+            "horizontal move" : Timer(Move_Wait_Time)
         }
         self.timers["vertical move"].activate()
 
@@ -42,8 +43,22 @@ class Game:
             y = ro * Cell_Size
             pygame.draw.line(self.surface, Line_Color, (0, y), (self.surface.get_width(), y), 1)
 
+
+    def input(self):
+        key = pygame.key.get_pressed()
+
+        if not self.timers["horizontal move"].active:
+            if(key[pygame.K_LEFT]):
+                self.tetromino.move_horizontal(-1)
+                self.timers["horizontal move"].activate()
+            if(key[pygame.K_RIGHT]):
+                self.tetromino.move_horizontal(1)
+                self.timers["horizontal move"].activate()
+
+    
     def run(self):
         #update
+        self.input()
         self.tmier_update()
         self.sprites.update()
 
@@ -65,6 +80,10 @@ class Tetromino:
 
         #create blocks
         self.blocks =[Block(group, pos, self.color) for pos in self.block_positions]
+
+    def move_horizontal(self, amount):
+         for block in self.blocks:
+             block.pos.x += amount
 
     def move_down(self):
         for block in self.blocks:
