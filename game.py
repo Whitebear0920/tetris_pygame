@@ -1,6 +1,7 @@
+#遊戲畫面
 from random import choice
 from setting import * 
-
+from timer import Timer
 class Game:
 
     def __init__(self):
@@ -14,9 +15,23 @@ class Game:
         #lines
         self.line_surface = self.surface.copy()
         
-
         #tetromino
         self.tetromino = Tetromino(choice(list(Tetorminos.keys())), self.sprites)
+
+        #timer
+        self.timers = {
+            "vertical move" : Timer(Update_Start_Speed, True, self.move_down)
+        }
+        self.timers["vertical move"].activate()
+
+    def tmier_update(self):
+        for timer in self.timers.values():
+            timer.update()
+
+    def move_down(self):
+        print("timer")
+        self.tetromino.move_down()
+
 
     def draw_grid(self): #畫格子
         for col in range(1,Columns):
@@ -27,6 +42,10 @@ class Game:
             pygame.draw.line(self.surface, Line_Color, (0, y), (self.surface.get_width(), y), 1)
 
     def run(self):
+        #update
+        self.tmier_update()
+
+        #畫外框
         self.display_surface.blit(self.surface, (Padding, Padding))
         self.sprites.draw(self.surface)
         pygame.draw.rect(self.display_surface, Line_Color, self.rect, 2, 2)
@@ -39,6 +58,10 @@ class Tetromino:
 
         #create blocks
         self.blocks =[Block(group, pos, self.color) for pos in self.block_positions]
+
+    def move_down(self):
+        for block in self.blocks:
+            block.pos.y += 1
 
 class Block(pygame.sprite.Sprite):
     def __init__(self, group, pos, color):
