@@ -1,3 +1,5 @@
+#控制磚塊下降等等
+
 from pygame.time import get_ticks
 
 class Timer:

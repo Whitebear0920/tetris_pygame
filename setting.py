@@ -21,7 +21,7 @@ Window_Width = Game_Width + SideBar_Width + Padding * 3
 Window_Height = Game_Height + Padding * 2 
 
 #Game Behaviour
-Update_Start_Speed = 600 #程式每次更新間隔(ms)
+Update_Start_Speed = 500 #程式每次更新間隔(ms) #水平移動只能在這段時間內執行
 Move_Wait_Time = 100
 Rotate_Wait_Time = 200
 Block_Offset = pygame.Vector2(Columns // 2, -1)

@@ -64,7 +64,7 @@ class Game:
 
         # #drawing
         self.surface.fill(Gray)
-        self.sprites.draw(self.surface)
+        self.sprites.draw(self.surface)#畫磚塊精靈
 
         self.draw_grid()
         self.display_surface.blit(self.surface, (Padding, Padding))
@@ -88,6 +88,11 @@ class Tetromino: #磚塊
     def move_down(self):
         for block in self.blocks:
             block.pos.y += 1
+
+    #collisions
+    def next_move_horizontal_collide(self, blocks, amount):
+        collision_list = [block.horinotal for block in self.blocks]
+    #movement
 
 class Block(pygame.sprite.Sprite):
     def __init__(self, group, pos, color):
