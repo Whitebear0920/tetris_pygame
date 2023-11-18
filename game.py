@@ -14,7 +14,7 @@ class Game:
         #lines
         self.line_surface = self.surface.copy()
         self.line_surface.fill((0, 255, 0))
-        self.line_surface.set_colorkey((0, 255, 0))
+        self.line_surface.set_colorkey((0, 255, 0))#將顏色轉為透明
         self.line_surface.set_alpha(120)
         
         #tetromino
@@ -42,7 +42,7 @@ class Game:
         for ro in range(1,Row):
             y = ro * Cell_Size
             pygame.draw.line(self.surface, Line_Color, (0, y), (self.surface.get_width(), y), 1)
-
+        
 
     def input(self):
         key = pygame.key.get_pressed()
@@ -72,7 +72,7 @@ class Game:
         #畫外框
         pygame.draw.rect(self.display_surface, Line_Color, self.rect, 2, 2)
 
-class Tetromino:
+class Tetromino: #磚塊
     def __init__(self, shape, group):
         #setup
         self.block_positions = Tetorminos[shape]["shape"]
