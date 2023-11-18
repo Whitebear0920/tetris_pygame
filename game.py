@@ -82,17 +82,24 @@ class Tetromino: #磚塊
         self.blocks =[Block(group, pos, self.color) for pos in self.block_positions]
 
     def move_horizontal(self, amount):
-         for block in self.blocks:
-             block.pos.x += amount
+        if not self.next_move_horizontal_collide(self.blocks, amount):
+            for block in self.blocks:
+                block.pos.x += amount
 
     def move_down(self):
-        for block in self.blocks:
-            block.pos.y += 1
-
+        if not self.next_move_down(self.blocks):
+            for block in self.blocks:
+                block.pos.y += 1
+            
     #collisions
     def next_move_horizontal_collide(self, blocks, amount):
-        collision_list = [block.horinotal for block in self.blocks]
+        collision_list = [block.horizontal_collide(int(block.pos.x + amount)) for block in blocks]
+        return True if any(collision_list) else False
+
     #movement
+    def next_move_down(self, blocks):
+        collision_list = [block.down_collide(int(block.pos.y + 1)) for block in blocks] 
+        return True if any(collision_list) else False
 
 class Block(pygame.sprite.Sprite):
     def __init__(self, group, pos, color):
@@ -106,6 +113,14 @@ class Block(pygame.sprite.Sprite):
         # x = self.pos.x * Cell_Size
         # y = self.pos.y * Cell_Size
         self.rect = self.image.get_rect(topleft = self.pos * Cell_Size)
+   
+    def horizontal_collide(self, x): #邊界判斷
+        if not 0 <= x < Columns:
+            return True
+    
+    def down_collide(self, y):
+        if not y <  Row:
+            return True
 
     def update(self):
         # self.rect = self.image.get_rect(topleft = self.pos * Cell_Size)
