@@ -1,7 +1,8 @@
 #遊戲畫面
 from random import choice
-from setting import * 
 from timer import Timer
+from setting import * 
+
 class Game:
     def __init__(self):
 
@@ -18,7 +19,14 @@ class Game:
         self.line_surface.set_alpha(120)
         
         #tetromino
-        self.tetromino = Tetromino(choice(list(Tetorminos.keys())), self.sprites)
+        self.field_data = [[0 for x in range(Columns)] for y in range(Row)]
+        for row in self.field_data:
+            print(row)
+        self.tetromino = Tetromino(
+            choice(list(Tetorminos.keys())), 
+            self.sprites, 
+            self.create_new_tetromino,
+            self.field_data)
 
         #timer
         self.timers = {
@@ -27,6 +35,12 @@ class Game:
         }
         self.timers["vertical move"].activate()
 
+    def create_new_tetromino(self):
+        self.tetromino = Tetromino(
+            choice(list(Tetorminos.keys())), 
+            self.sprites, 
+            self.create_new_tetromino,
+            self.field_data)
     def tmier_update(self):
         for timer in self.timers.values():
             timer.update()
@@ -73,11 +87,12 @@ class Game:
         pygame.draw.rect(self.display_surface, Line_Color, self.rect, 2, 2)
 
 class Tetromino: #磚塊
-    def __init__(self, shape, group):
+    def __init__(self, shape, group, create_new_tetromino, field_data):
         #setup
         self.block_positions = Tetorminos[shape]["shape"]
         self.color = Tetorminos[shape]["color"]
-
+        self.create_new_tetromino = create_new_tetromino
+        self.field_data = field_data
         #create blocks
         self.blocks =[Block(group, pos, self.color) for pos in self.block_positions]
 
@@ -90,15 +105,19 @@ class Tetromino: #磚塊
         if not self.next_move_down(self.blocks):
             for block in self.blocks:
                 block.pos.y += 1
-            
+        else:
+            for block in self.blocks:
+                self.field_data[int(block.pos.y)][int(block.pos.x)] = block # 使用int()的原因是因為Vector2預設的資料型態是float
+            self.create_new_tetromino()
+
     #collisions
     def next_move_horizontal_collide(self, blocks, amount):
-        collision_list = [block.horizontal_collide(int(block.pos.x + amount)) for block in blocks]
+        collision_list = [block.horizontal_collide(int(block.pos.x + amount), self.field_data) for block in blocks]
         return True if any(collision_list) else False
 
     #movement
     def next_move_down(self, blocks):
-        collision_list = [block.down_collide(int(block.pos.y + 1)) for block in blocks] 
+        collision_list = [block.down_collide(int(block.pos.y + 1), self.field_data) for block in blocks] 
         return True if any(collision_list) else False
 
 class Block(pygame.sprite.Sprite):
@@ -114,12 +133,17 @@ class Block(pygame.sprite.Sprite):
         # y = self.pos.y * Cell_Size
         self.rect = self.image.get_rect(topleft = self.pos * Cell_Size)
    
-    def horizontal_collide(self, x): #邊界判斷
+    def horizontal_collide(self, x, field_data): #邊界判斷
         if not 0 <= x < Columns:
             return True
-    
-    def down_collide(self, y):
-        if not y <  Row:
+        if x >= 0 and field_data[int(self.pos.y)][x]:
+            return True
+
+
+    def down_collide(self, y, field_data):
+        if  y >=  Row:
+            return True
+        if y >= 0 and field_data[y][int(self.pos.x)]:
             return True
 
     def update(self):
