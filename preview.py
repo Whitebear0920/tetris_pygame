@@ -14,7 +14,7 @@ class Preview:
         # shapes
         self.next_shapes= next_shape
         # self.shape_surfaces = {shape: load("../graphics/T.png") for shape in Tetorminos.keys()}
-        self.shape_surfaces = {shape: load(path.join("..", "graphics", f"{shape}.png")).convert_alpha() for shape in Tetorminos.keys()}
+        self.shape_surfaces = {shape: load(path.join(".", "graphic", f"{shape}.png")).convert_alpha() for shape in Tetorminos.keys()}
 
     def run(self):
         self.display_surface.blit(self.surface, self.rect)
