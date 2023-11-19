@@ -20,8 +20,6 @@ class Game:
         
         #tetromino
         self.field_data = [[0 for x in range(Columns)] for y in range(Row)]
-        for row in self.field_data:
-            print(row)
         self.tetromino = Tetromino(
             choice(list(Tetorminos.keys())), 
             self.sprites, 
@@ -31,7 +29,8 @@ class Game:
         #timer
         self.timers = {
             "vertical move" : Timer(Update_Start_Speed, True, self.move_down),
-            "horizontal move" : Timer(Move_Wait_Time)
+            "horizontal move" : Timer(Move_Wait_Time),
+            "rotate" : Timer(Rotate_Wait_Time)
         }
         self.timers["vertical move"].activate()
 
@@ -89,6 +88,8 @@ class Game:
     def input(self):
         key = pygame.key.get_pressed()
 
+
+        #checking horizontal movement
         if not self.timers["horizontal move"].active:
             if(key[pygame.K_LEFT]):
                 self.tetromino.move_horizontal(-1)
@@ -96,6 +97,12 @@ class Game:
             if(key[pygame.K_RIGHT]):
                 self.tetromino.move_horizontal(1)
                 self.timers["horizontal move"].activate()
+
+        #check for rotation
+        if not self.timers["rotate"].active:
+            if key[pygame.K_UP]:
+                self.tetromino.rotate()
+                self.timers["rotate"].activate()
 
     
     def run(self):
@@ -114,9 +121,10 @@ class Game:
         #畫外框
         pygame.draw.rect(self.display_surface, Line_Color, self.rect, 2, 2)
 
-class Tetromino: #磚塊
+class Tetromino: #單一個磚塊
     def __init__(self, shape, group, create_new_tetromino, field_data):
         #setup
+        self.shape = shape
         self.block_positions = Tetorminos[shape]["shape"]
         self.color = Tetorminos[shape]["color"]
         self.create_new_tetromino = create_new_tetromino
@@ -147,6 +155,32 @@ class Tetromino: #磚塊
     def next_move_down(self, blocks):
         collision_list = [block.down_collide(int(block.pos.y + 1), self.field_data) for block in blocks] 
         return True if any(collision_list) else False
+    
+    #rotate
+    def rotate(self):
+        if self.shape != "O":
+            #1. pivot point
+            pivot_pos = self.blocks[0].pos
+
+            #2.new block positions
+            new_block_positions = [block.rotate(pivot_pos) for block in self.blocks]
+
+            #3. collision check
+            for pos in new_block_positions:
+                #horizontal 
+                if pos.x < 0 or pos.x >= Columns:
+                    return 
+
+                #field check -> collisiton with other pieces
+                if (self.field_data[int(pos.y)][int(pos.x)]):
+                    return 
+                #vertival / floor check
+                if  pos.y >=  Row:
+                    return
+            #4. implement new positions
+
+            for i, block in enumerate(self.blocks):
+                block.pos = new_block_positions[i]
 
 class Block(pygame.sprite.Sprite):
     def __init__(self, group, pos, color):
@@ -161,6 +195,13 @@ class Block(pygame.sprite.Sprite):
         # y = self.pos.y * Cell_Size
         self.rect = self.image.get_rect(topleft = self.pos * Cell_Size)
    
+    def rotate(self, pivot_pos):
+        # distance = self.pos - pivot_pos
+        # rotated = distance.rotate(90)
+        # new_pos = pivot_pos + rotated
+        # return new_pos
+        return pivot_pos + (self.pos - pivot_pos).rotate(90) # .rotate(90) 是Vector2的函數
+
     def horizontal_collide(self, x, field_data): #邊界判斷
         if not 0 <= x < Columns:
             return True
