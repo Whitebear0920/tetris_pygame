@@ -24,7 +24,8 @@ class Main:
         #components 
         self.game = Game(self.get_next_shape) 
         self.score  = Score()
-        self.preview = Preview(self.next_shapes)
+        self.preview = Preview()
+
     def get_next_shape(self):
         next_shape = self.next_shapes.pop(0)
         self.next_shapes.append(choice(list(Tetorminos.keys())))
@@ -41,10 +42,10 @@ class Main:
             self.game.run()
             self.game.draw_grid()
             self.score.run()
-            self.preview.run()
+            self.preview.run(self.next_shapes)
             #updatating the game
             pygame.display.update()
-            self.clock.tick() #控制遊戲幀數
+            self.clock.tick(165) #控制遊戲幀數
 
 if __name__ == "__main__":
     main = Main()
