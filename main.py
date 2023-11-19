@@ -45,7 +45,7 @@ class Main:
             self.preview.run(self.next_shapes)
             #updatating the game
             pygame.display.update()
-            self.clock.tick(165) #控制遊戲幀數
+            self.clock.tick() #控制遊戲幀數
 
 if __name__ == "__main__":
     main = Main()
