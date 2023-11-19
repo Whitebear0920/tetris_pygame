@@ -74,13 +74,16 @@ class Game:
                 for block in self.field_data[delete_row]: #迭代每個精靈並刪除該精靈
                     block.kill()
                 #move down blocks
-                for row in self.field_data:
+                for row in self.field_data: #這邊有點不懂
                     for block in row:
                         if block and block.pos.y < delete_row:
                             block.pos.y += 1
 
                     
             #rebuild the field data
+            self.field_data = [[0 for x in range(Columns)] for y in range(Row)]
+            for block in self.sprites: #更新field_data
+                self.field_data[int(block.pos.y)][int(block.pos.x)] = block
 
 
     def input(self):
