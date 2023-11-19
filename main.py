@@ -6,6 +6,7 @@ from game import Game
 from score import Score
 from preview import Preview
 
+from random import choice 
 
 class Main:
     def __init__(self):
@@ -16,10 +17,18 @@ class Main:
         self.clock = pygame.time.Clock() #遊戲時刻
         pygame.display.set_caption("Tetris") #設定視窗標題名稱
 
+        #shapes
+        self.next_shapes = [choice(list(Tetorminos.keys())) for shape in range(3)]
+
+
         #components 
-        self.game = Game() 
+        self.game = Game(self.get_next_shape) 
         self.score  = Score()
-        self.preview = Preview()
+        self.preview = Preview(self.next_shapes)
+    def get_next_shape(self):
+        next_shape = self.next_shapes.pop(0)
+        self.next_shapes.append(choice(list(Tetorminos.keys())))
+        return next_shape
 
     def run(self):
         while(True):

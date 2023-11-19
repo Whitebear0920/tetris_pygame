@@ -4,7 +4,7 @@ from timer import Timer
 from setting import * 
 
 class Game:
-    def __init__(self):
+    def __init__(self, get_next_shape):
 
         #general setup
         self.surface = pygame.Surface((Game_Width, Game_Height)) #創建一個對象
@@ -12,6 +12,10 @@ class Game:
         self.rect = self.surface.get_rect(topleft = (Padding, Padding))
         self.sprites = pygame.sprite.Group()
         
+        #game connection
+        self.get_next_shape = get_next_shape
+
+
         #lines
         self.line_surface = self.surface.copy()
         self.line_surface.fill((0, 255, 0))
@@ -37,7 +41,7 @@ class Game:
     def create_new_tetromino(self):
         self.check_finished_rows()
         self.tetromino = Tetromino(
-            choice(list(Tetorminos.keys())), 
+            self.get_next_shape(), 
             self.sprites, 
             self.create_new_tetromino,
             self.field_data)
