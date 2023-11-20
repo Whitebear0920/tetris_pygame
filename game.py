@@ -31,6 +31,9 @@ class Game:
             self.field_data)
 
         #timer
+        self.down_speed = Update_Start_Speed
+        self.down_speed_faster = self.down_speed * 0.3
+        self.down_pressed = False
         self.timers = {
             "vertical move" : Timer(Update_Start_Speed, True, self.move_down),
             "horizontal move" : Timer(Move_Wait_Time),
@@ -107,6 +110,15 @@ class Game:
             if key[pygame.K_UP]:
                 self.tetromino.rotate()
                 self.timers["rotate"].activate()
+
+        #down speed update
+        if not self.down_pressed and key[pygame.K_DOWN]:
+            self.down_pressed = True
+            self.timers["vertical move"].duration = self.down_speed_faster
+            
+        if self.down_pressed and not key[pygame.K_DOWN]:
+            self.down_pressed = False
+            self.timers["vertical move"].duration = self.down_speed
 
     
     def run(self):
