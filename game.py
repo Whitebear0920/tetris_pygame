@@ -147,8 +147,7 @@ class Game:
         if self.down_pressed and not key[pygame.K_DOWN]:
             self.down_pressed = False
             self.timers["vertical move"].duration = self.down_speed
-
-    
+        
     def run(self):
         #update
         self.input()

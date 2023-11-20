@@ -57,7 +57,6 @@ class Main:
                 self.clock.tick(60) #控制遊戲幀數
                 opkey = pygame.key.get_pressed()
                 if (opkey[pygame.K_p]):
-                    sleep(1)
                     Start = False
                     print(Start)
             while not Start:
@@ -68,7 +67,6 @@ class Main:
                         exit()
                 opkey = pygame.key.get_pressed()
                 if (opkey[pygame.K_o]):
-                    sleep(1)
                     Start = True
                     print(Start)
 
