@@ -3,7 +3,6 @@ import pyautogui #保留他 可以讓視窗符合畫面大小
 
 
 
-
 #繪製俄羅斯方塊遊戲尺寸
 Columns = 10
 Row = 20

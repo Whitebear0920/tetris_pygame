@@ -5,7 +5,7 @@ from sys import exit
 from game import Game
 from score import Score
 from preview import Preview
-
+from time import sleep
 from random import choice 
 
 class Main:
@@ -39,21 +39,40 @@ class Main:
         return next_shape
 
     def run(self):
-        while(True):
-            for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
+        Start = True
+        while True:
+            while Start:
+                for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
 
-                if event.type == pygame.QUIT: #當遊戲狀態為停止時 離開遊戲
-                    pygame.quit() #exit everything 
-                    exit()
-            #display
-            self.Dispay_Surface.fill(Gray) #設定背景顏色
-            self.game.run()
-            self.game.draw_grid()
-            self.score.run()
-            self.preview.run(self.next_shapes)
-            #updatating the game
-            pygame.display.update()
-            self.clock.tick(60) #控制遊戲幀數
+                    if event.type == pygame.QUIT: #當遊戲狀態為停止時 離開遊戲
+                        pygame.quit() #exit everything 
+                        exit()
+                #display
+                self.Dispay_Surface.fill(Gray) #設定背景顏色
+                self.game.run()
+                self.game.draw_grid()
+                self.score.run()
+                self.preview.run(self.next_shapes)
+                #updatating the game
+                pygame.display.update()
+                self.clock.tick(60) #控制遊戲幀數
+                opkey = pygame.key.get_pressed()
+                if (opkey[pygame.K_p]):
+                    sleep(1)
+                    Start = False
+                    print(Start)
+            while not Start:
+                for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
+
+                    if event.type == pygame.QUIT: #當遊戲狀態為停止時 離開遊戲
+                        pygame.quit() #exit everything 
+                        exit()
+                opkey = pygame.key.get_pressed()
+                if (opkey[pygame.K_o]):
+                    sleep(1)
+                    Start = True
+                    print(Start)
+
 
 if __name__ == "__main__":
     main = Main()
