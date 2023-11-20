@@ -22,7 +22,6 @@ class Timer:
 
     def update(self):
         current_time = get_ticks()
-        print(current_time)
         if current_time - self.start_time >= self.duration and self.active:
             #call a function
             if(self.func and self.start_time != 0):

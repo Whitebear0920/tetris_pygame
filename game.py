@@ -57,8 +57,9 @@ class Game:
             self.current_level += 1
             self.down_speed * 0.75
             self.down_speed_faster = self.down_speed * 0.3
-            self.timers["vertival move"].duration = self.down_speed
+            self.timers["vertical move"].duration = self.down_speed
         self.update_score(self.current_lines, self.current_score, self.current_level)
+                
 
     def check_game_over(self):
         for block in self.tetromino.blocks:
@@ -75,7 +76,7 @@ class Game:
             self.create_new_tetromino,
             self.field_data)
         
-    def tmier_update(self):
+    def timer_update(self):
         for timer in self.timers.values():
             timer.update()
 
@@ -151,7 +152,7 @@ class Game:
     def run(self):
         #update
         self.input()
-        self.tmier_update()
+        self.timer_update()
         self.sprites.update()
 
         # #drawing
