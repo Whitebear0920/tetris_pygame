@@ -13,15 +13,20 @@ class Score:
         #increment
         self.increment_height = self.surface.get_height() / 3 
 
+        #data
+        self.score = 0
+        self.level = 1
+        self.lines = 0
+
     def display_text(self, pos, text):
-        text_surface = self.font.render(text, True, "white")
+        text_surface = self.font.render(f"{text[0]}: {text[1]}", True, "white")
         text_rext = text_surface.get_rect(center = pos)
         self.surface.blit(text_surface, text_rext)
 
     def run(self):
 
         self.surface.fill(Gray)
-        for i, text in enumerate(["Score", "leave", "lines"]):
+        for i, text in enumerate([("Score", self.score), ("level", self.level), ("lines", self.lines)]):
             x = self.surface.get_width() / 2
             y = self.increment_height / 2 + i * self.increment_height
             self.display_text((x ,y), text)

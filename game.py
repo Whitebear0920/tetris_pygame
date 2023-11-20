@@ -2,9 +2,10 @@
 from random import choice
 from timer import Timer
 from setting import * 
+from sys import exit
 
 class Game:
-    def __init__(self, get_next_shape):
+    def __init__(self, get_next_shape, update_score):
 
         #general setup
         self.surface = pygame.Surface((Game_Width, Game_Height)) #創建一個對象
@@ -14,6 +15,7 @@ class Game:
         
         #game connection
         self.get_next_shape = get_next_shape
+        self.update_score = update_score
 
 
         #lines
@@ -42,14 +44,30 @@ class Game:
         self.timers["vertical move"].activate()
 
         #score
-        self.current_leave = 1
+        self.current_level = 1
         self.current_score = 0
         self.current_lines = 0
 
     def calculate_score(self, num_lines):
         self.current_lines += num_lines
+        self.current_score += Score_Data[num_lines] * self.current_level
+
+        #every 10 lines += level by 1
+        if self.current_lines / 10 > self.current_level:
+            self.current_level += 1
+            self.down_speed * 0.75
+            self.down_speed_faster = self.down_speed * 0.3
+            self.timers["vertival move"].duration = self.down_speed
+        self.update_score(self.current_lines, self.current_score, self.current_level)
+
+    def check_game_over(self):
+        for block in self.tetromino.blocks:
+            if block.pos.y < 0:
+                print("Game Over")
+                exit()
 
     def create_new_tetromino(self):
+        self.check_game_over()
         self.check_finished_rows()
         self.tetromino = Tetromino(
             self.get_next_shape(), 
@@ -98,8 +116,8 @@ class Game:
             for block in self.sprites: #更新field_data
                 self.field_data[int(block.pos.y)][int(block.pos.x)] = block
 
-        #update score
-        self.calculate_score(len(delete_row))
+            #update score
+            self.calculate_score(len(delete_rows))
 
     def input(self):
         key = pygame.key.get_pressed()
