@@ -39,6 +39,7 @@ class Main:
 
     def run(self):
         Start = True
+        gameover = False
         while True:
             while Start:
                 for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
@@ -52,14 +53,22 @@ class Main:
                 self.game.draw_grid()
                 self.score.run()
                 self.preview.run(self.next_shapes)
+                gameover = self.game.Game_over()
                 #updatating the game
                 pygame.display.update()
                 self.clock.tick(60) #控制遊戲幀數
+
+                #gameover
+                if gameover:
+                    Start = False
+                    print("press 'Q' to exit the game")
+                
+                #pause
                 opkey = pygame.key.get_pressed()
                 if (opkey[pygame.K_p]):
                     Start = False
                     print(Start)
-            while not Start:
+            while ((not Start )and (not gameover)):
                 for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
 
                     if event.type == pygame.QUIT: #當遊戲狀態為停止時 離開遊戲
@@ -69,6 +78,17 @@ class Main:
                 if (opkey[pygame.K_o]):
                     Start = True
                     print(Start)
+            while gameover:
+                for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
+
+                    if event.type == pygame.QUIT: #當遊戲狀態為停止時 離開遊戲
+                        pygame.quit() #exit everything 
+                        exit()
+                opkey = pygame.key.get_pressed()
+                if (opkey[pygame.K_q]):
+                    print("END!")
+                    pygame.quit()
+                    exit()
 
 
 if __name__ == "__main__":

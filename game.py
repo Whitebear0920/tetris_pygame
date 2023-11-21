@@ -5,6 +5,7 @@ from setting import *
 from sys import exit
 
 class Game:
+    gameover = False
     def __init__(self, get_next_shape, update_score):
 
         #general setup
@@ -48,6 +49,9 @@ class Game:
         self.current_score = 0
         self.current_lines = 0
 
+        #gameover
+        self.gameover = False
+
     def calculate_score(self, num_lines):
         self.current_lines += num_lines
         self.current_score += Score_Data[num_lines] * self.current_level
@@ -59,13 +63,18 @@ class Game:
             self.down_speed_faster = self.down_speed * 0.3
             self.timers["vertical move"].duration = self.down_speed
         self.update_score(self.current_lines, self.current_score, self.current_level)
-                
-
+            
     def check_game_over(self):
         for block in self.tetromino.blocks:
             if block.pos.y < 0:
+                self.gameover = True
                 print("Game Over")
-                exit()
+
+    def Game_over(self):
+        if self.gameover:
+            return True
+        else:
+            return False
 
     def create_new_tetromino(self):
         self.check_game_over()
