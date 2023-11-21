@@ -37,9 +37,9 @@ class Game:
         self.down_speed_faster = self.down_speed * 0.3
         self.down_pressed = False
         self.timers = {
-            "vertical move" : Timer(Update_Start_Speed, True, self.move_down),
+            "rotate" : Timer(Rotate_Wait_Time),
             "horizontal move" : Timer(Move_Wait_Time),
-            "rotate" : Timer(Rotate_Wait_Time)
+            "vertical move" : Timer(Update_Start_Speed, True, self.move_down)   
         }
         self.timers["vertical move"].activate()
 
@@ -59,8 +59,7 @@ class Game:
             self.down_speed_faster = self.down_speed * 0.3
             self.timers["vertical move"].duration = self.down_speed
         self.update_score(self.current_lines, self.current_score, self.current_level)
-                
-
+    
     def check_game_over(self):
         for block in self.tetromino.blocks:
             if block.pos.y < 0:
@@ -138,6 +137,9 @@ class Game:
             if key[pygame.K_UP]:
                 self.tetromino.rotate()
                 self.timers["rotate"].activate()
+                
+        
+
 
         #down speed update
         if not self.down_pressed and key[pygame.K_DOWN]:
@@ -185,6 +187,7 @@ class Tetromino: #單一個磚塊
             for block in self.blocks:
                 block.pos.y += 1
         else:
+
             for block in self.blocks:
                 self.field_data[int(block.pos.y)][int(block.pos.x)] = block # 使用int()的原因是因為Vector2預設的資料型態是float
             self.create_new_tetromino()

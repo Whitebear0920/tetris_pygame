@@ -1,7 +1,6 @@
 import pygame
 import pyautogui #保留他 可以讓視窗符合畫面大小
 
-Pass_Game_Time = 100000
 
 #繪製俄羅斯方塊遊戲尺寸
 Columns = 10
