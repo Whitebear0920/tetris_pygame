@@ -53,6 +53,7 @@ class Main:
                 self.game.draw_grid()
                 self.score.run()
                 self.preview.run(self.next_shapes)
+                self.game.level_up()
                 gameover = self.game.Game_over()
                 #updatating the game
                 pygame.display.update()
