@@ -13,7 +13,6 @@ class Game:
         self.display_surface = pygame.display.get_surface() #取得當前視窗
         self.rect = self.surface.get_rect(topleft = (Padding, Padding))
         self.sprites = pygame.sprite.Group()
-        
         #game connection
         self.get_next_shape = get_next_shape
         self.update_score = update_score
@@ -40,12 +39,14 @@ class Game:
         self.timers = {
             "rotate" : Timer(Rotate_Wait_Time),
             "horizontal move" : Timer(Move_Wait_Time),
-            "vertical move" : Timer(Update_Start_Speed, True, self.move_down)   
+            "vertical move" : Timer(Update_Start_Speed, True, self.move_down), 
         }
         self.timers["vertical move"].activate()
+        self.start_time = Timer(1000)
+        self.start_time.activate()
 
         #score
-        self.current_level = 1
+        self.current_level = 0
         self.current_score = 0
         self.current_lines = 0
 
@@ -57,13 +58,27 @@ class Game:
         self.current_score += Score_Data[num_lines] * self.current_level
 
         #every 10 lines += level by 1
-        if self.current_lines / 10 > self.current_level:
+        # if self.current_lines / 10 > self.current_level:
+        #     self.current_level += 1
+        #     self.down_speed * 0.75
+        #     self.down_speed_faster = self.down_speed * 0.3
+        #     self.timers["vertical move"].duration = self.down_speed
+        self.update_score(self.current_lines, self.current_score, self.current_level)
+        
+    
+    def level_up(self):
+        print((self.start_time.timecheak() - self.start_time.first_start_time ) // 1000 % 60, "S")
+        if ((self.start_time.timecheak() - self.start_time.first_start_time ) // 1000)  % 60 == 0 and self.start_time.active:
             self.current_level += 1
             self.down_speed * 0.75
             self.down_speed_faster = self.down_speed * 0.3
             self.timers["vertical move"].duration = self.down_speed
-        self.update_score(self.current_lines, self.current_score, self.current_level)
-                
+            self.update_score(self.current_lines, self.current_score, self.current_level)
+            self.start_time.active = False
+        elif((self.start_time.timecheak() - self.start_time.first_start_time ) // 1000 % 60 == 1):
+            self.start_time.active = True
+            
+
 
     def check_game_over(self):
         for block in self.tetromino.blocks:

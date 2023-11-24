@@ -7,7 +7,7 @@ class Timer:
         self.repeated = repeated 
         self.func = func 
         self.duration = duration
-
+        self.first_start_time = 0
         self.start_time = 0
         self.active = False
 
@@ -35,3 +35,10 @@ class Timer:
             if self.repeated:
                 self.activate()
             
+
+    def timecheak(self):
+        return get_ticks()
+    
+    # def pass_time(self):
+    #     if(self.first_start_time)
+        
