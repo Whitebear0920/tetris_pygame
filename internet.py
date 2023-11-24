@@ -36,7 +36,7 @@ class date_process():
         self.sock.sendto(self.data, self.server_addr)
 
         # 等待並接收Server傳回來的訊息，若為Enter Response則繼續下一步，否則繼續等待
-        is_entered = False
+        self.is_entered = False
         while not is_entered:
             try:
                 self.data, address = self.sock.recvfrom(self.Max_Bytes)
@@ -52,6 +52,9 @@ class date_process():
                 print()
                 data = json.dumps(msgdict).encode("utf-8")
                 self.sock.sendto(data, self.server_addr)
+
+    def connect(self):
+        return self.is_entered
 
     def send_message(self):
         print("開始執行send message")

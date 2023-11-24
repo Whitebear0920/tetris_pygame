@@ -7,6 +7,8 @@ from score import Score
 from preview import Preview
 from time import sleep
 from random import choice 
+from internet import date_process
+
 
 class Main:
     def __init__(self):
@@ -25,7 +27,7 @@ class Main:
         self.game = Game(self.get_next_shape, self.update_score) 
         self.score  = Score()
         self.preview = Preview()
-
+        self.internet = date_process()
 
     def update_score(self, lines, score, level):
         self.score.lines = lines
@@ -40,6 +42,9 @@ class Main:
     def run(self):
         Start = True
         gameover = False
+        #網路連接
+        # while not self.internet.connect():
+        #     pass 
         while True:
             while Start:
                 for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
