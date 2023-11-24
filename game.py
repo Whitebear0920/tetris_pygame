@@ -13,7 +13,6 @@ class Game:
         self.display_surface = pygame.display.get_surface() #取得當前視窗
         self.rect = self.surface.get_rect(topleft = (Padding, Padding))
         self.sprites = pygame.sprite.Group()
-        
         #game connection
         self.get_next_shape = get_next_shape
         self.update_score = update_score
@@ -40,7 +39,7 @@ class Game:
         self.timers = {
             "rotate" : Timer(Rotate_Wait_Time),
             "horizontal move" : Timer(Move_Wait_Time),
-            "vertical move" : Timer(Update_Start_Speed, True, self.move_down)   
+            "vertical move" : Timer(Update_Start_Speed, True, self.move_down), 
         }
         self.timers["vertical move"].activate()
 
