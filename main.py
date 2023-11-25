@@ -31,8 +31,6 @@ class Main:
         self.preview = Preview()
         self.internet = date_process()
         
-        #socket
-        self.s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 
 
     def update_score(self, lines, score, level):
@@ -97,14 +95,6 @@ class Main:
                     print("END!")
                     pygame.quit()
                     exit()
-
-    def send_data():
-        SendData=
-        
-    def recv_data(self):
-        while True:
-            RecvData,addr = self.s.recvfrom(65565)
-            RecvData = json.loads(RecvData.decode())
             
 
 if __name__ == "__main__":

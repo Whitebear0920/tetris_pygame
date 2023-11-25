@@ -3,6 +3,14 @@ import json
 import socket
 import os
 import time
+"""
+data = {
+            "GameOver": False,
+            "Player": 1,
+            "ClearLine": 0
+        }
+
+"""
 
 class date_process():
 
