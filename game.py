@@ -3,6 +3,7 @@ from random import choice
 from timer import Timer
 from setting import * 
 from sys import exit
+import socket
 
 class Game:
     gameover = False

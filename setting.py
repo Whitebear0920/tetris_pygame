@@ -1,6 +1,20 @@
 import pygame
 import pyautogui #保留他 可以讓視窗符合畫面大小
 
+"""
+data = {
+            "GameOver": False,
+            "Player": 1,
+            "ClearLine": 0
+        }
+
+"""
+
+
+#server
+Server_IP="127.0.0.1"
+Server_port = 57414
+Server_addr = ((Server_IP,Server_port))
 
 #繪製俄羅斯方塊遊戲尺寸
 Columns = 10

@@ -10,4 +10,9 @@ print('server start at: %s:%s' % server_addr)
 print('wait for connection...')
 
 while True:
-
+    try:
+        data, address = s.recvfrom(65565)
+    except ConnectionResetError:
+        print("someone leave")
+        continue
+    
