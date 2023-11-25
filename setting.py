@@ -48,6 +48,7 @@ Cyan = "#6cc6d9"
 Orange = "#f07e13"
 Gray = "#262626"
 Line_Color = "#ffffff"
+stack_block = "#999999"
 
 
 #shapes

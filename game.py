@@ -43,7 +43,7 @@ class Game:
             "vertical move" : Timer(Update_Start_Speed, True, self.move_down), 
         }
         self.timers["vertical move"].activate()
-        self.start_time = Timer(1000)
+        self.start_time = Timer(0)
         self.start_time.activate()
 
         #score
