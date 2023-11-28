@@ -18,6 +18,7 @@ class date_process():
     def __init__(self):
         self.game = Game()
         self.Max_Bytes = 65565
+        self.is_entered = False
         #server
         self.Server_IP="127.0.0.1"
         self.Server_port = 57414
@@ -34,7 +35,6 @@ class date_process():
         self.sock.sendto(self.data, self.Server_addr)
 
         # 等待並接收Server傳回來的訊息，若為Enter Response則繼續下一步，否則繼續等待
-        self.is_entered = False
         while not self.is_entered:
             try:
                 self.data, self.address = self.sock.recvfrom(self.Max_Bytes)
@@ -65,11 +65,11 @@ class date_process():
             # 接收來自Server傳來的訊息
             self.Recdata, self.address = self.sock.recvfrom(self.Max_Bytes)
             self.Recdata = json.loads(self.Recdata.decode('utf-8'))
-            if self.Recdata["type"] == "GameOver":
+            if self.Recdata["type"] == "GameOver": #GameOver
                 if self.Recdata["value"] == True:
                     self.game.gameover = True
                     print("win")
-            elif self.Recdata["type"] == "Attack":
+            elif self.Recdata["type"] == "Attack": #Attack Line
                 print("got attack!")
 
             

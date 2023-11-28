@@ -3,6 +3,7 @@ import threading
 import json
 
 s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+start = False
 players = []
 server_iP = "0.0.0.0"
 server_port = 57414
@@ -23,7 +24,7 @@ while True:
         data = {"type":"connected"}
         data = json.dumps(data).encode()
         s.sendto(data,address)
-    else:
+    elif len(players) == 2:
         data = json.dumps(data).encode()
         for i in players:
             if i != address:
