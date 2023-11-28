@@ -1,5 +1,6 @@
 #遊戲畫面
 from random import choice
+from pygame.sprite import Group
 from timer import Timer
 from setting import * 
 from sys import exit
@@ -18,7 +19,7 @@ class Game:
         self.get_next_shape = get_next_shape
         self.update_score = update_score
 
-
+        self.attack_rows = 1
         #lines
         self.line_surface = self.surface.copy()
         self.line_surface.fill((0, 255, 0))
@@ -94,8 +95,10 @@ class Game:
             return False
 
     def create_new_tetromino(self):
+        
         self.check_game_over()
         self.check_finished_rows()
+        self.check_attack_row(self.attack_rows)
         self.tetromino = Tetromino(
             self.get_next_shape(), 
             self.sprites, 
@@ -146,54 +149,35 @@ class Game:
             #update score
             self.calculate_score(len(delete_rows))
 
-    # def check_attack_row(self, nums):
-    #     if nums:
-    #         for i in self.sprites:
-    #             if i.pos.y - nums < 0 :
-    #                 self.gameover = True
-    #             else:
-    #                 i.pos.y -= nums
-
-    #         if not self.gameover:
-    #             self.field_data = [[0 for x in range(Columns)] for y in range(Row)]
-    #             dig_block = randint(0,9)
-    #             now_row = Row - 1
-    #             for j in range(nums):
-    #                 for i in range(0,9):
-    #                     if i != dig_block:
-    #                         Block(self.sprites, (now_row, i), stack_block)
-    #                 now_row -= 1
-    #             self.check_game_over()
-    #             if not self.gameover:
-    #                 for block in self.sprites: #更新field_data
-    #                     self.field_data[int(block.pos.y)][int(block.pos.x)] = block
-
     def check_attack_row(self, nums):
-        if nums:
+        dig_block = randint(0,9)
+        now_row = Row - 1
+        while nums:
+            
+            
+            self.field_data = [[0 for x in range(Columns)] for y in range(Row)]
             for i in self.sprites:
-                if i.pos.y - nums < 0:
-                    self.gameover = True
-                else:
-                    i.pos.y -= nums
+                i.pos.y -= 1
+                # if i.pos.y - nums < 0 :
+                #     self.gameover = True
+                # else:
+            # if not self.gameover:
+            
+            for i in range(Columns):
+                if i != dig_block:
+                    Block_two(self.sprites, (i , now_row), stack_block)
+                
+            # for i in self.sprites:
+            #     print(i.pos.x, i.pos.y)
+            for block in self.sprites: #更新field_data
+                # if  0 <= block.pos.y < Row and 0 <= block.pos.x < Columns:s
+                self.field_data[int(block.pos.y)][int(block.pos.x)] = block
 
-            if not self.gameover:
-                self.field_data = [[0 for x in range(Columns)] for y in range(Row)]
-                dig_block = randint(0, 9)
-                now_row = Row - 1
-                for j in range(nums):
-                    for i in range(Columns):  # 使用 Columns 來確保範圍在 0 到 Columns-1 之間
-                        if i != dig_block:
-                            Block(self.sprites, (now_row, i), stack_block)
-                    now_row -= 1
-
-                self.check_game_over()
-                if not self.gameover:
-                    for block in self.sprites:
-                        # 更新 field_data，確保 y 座標在有效範圍內
-                        y_coord = int(block.pos.y)
-                        if 0 <= y_coord < Row:
-                            self.field_data[y_coord][int(block.pos.x)] = block
-
+            nums -= 1
+            print(self.field_data)
+        self.attack_rows = 0
+          
+    
     def input(self):
         key = pygame.key.get_pressed()
 
@@ -336,6 +320,23 @@ class Block(pygame.sprite.Sprite):#單一個磚塊
         if y >= 0 and field_data[y][int(self.pos.x)]:
             return True
 
+    def update(self):
+        # self.rect = self.image.get_rect(topleft = self.pos * Cell_Size)
+        self.rect.topleft = self.pos * Cell_Size # 兩句話是一樣的意思
+
+class Block_two(pygame.sprite.Sprite):
+    def __init__(self, group, pos, color):
+        #general
+        super().__init__(group)
+        self.image = pygame.Surface((Cell_Size, Cell_Size))
+        self.image.fill(color)
+
+        #position
+        self.pos = pygame.Vector2(pos)
+        # x = self.pos.x * Cell_Size
+        # y = self.pos.y * Cell_Size
+        self.rect = self.image.get_rect(topleft = self.pos * Cell_Size)
+    
     def update(self):
         # self.rect = self.image.get_rect(topleft = self.pos * Cell_Size)
         self.rect.topleft = self.pos * Cell_Size # 兩句話是一樣的意思
