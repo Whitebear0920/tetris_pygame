@@ -1,9 +1,11 @@
 #遊戲畫面
 from random import choice
+from pygame.sprite import Group
 from timer import Timer
 from setting import * 
 from sys import exit
 import socket
+from random import randint
 
 class Game:
     def __init__(self, get_next_shape, update_score):
@@ -17,7 +19,7 @@ class Game:
         self.get_next_shape = get_next_shape
         self.update_score = update_score
 
-
+        self.attack_rows = 1
         #lines
         self.line_surface = self.surface.copy()
         self.line_surface.fill((0, 255, 0))
@@ -67,7 +69,7 @@ class Game:
         
     
     def level_up(self):
-        print((self.start_time.timecheak() - self.start_time.first_start_time ) // 1000 % 60, "S")
+        # print((self.start_time.timecheak() - self.start_time.first_start_time ) // 1000 % 60, "S")
         if ((self.start_time.timecheak() - self.start_time.first_start_time ) // 1000)  % 60 == 0 and self.start_time.active:
             self.current_level += 1
             self.down_speed * 0.75
@@ -93,8 +95,10 @@ class Game:
             return False
 
     def create_new_tetromino(self):
+        
         self.check_game_over()
         self.check_finished_rows()
+        self.check_attack_row(self.attack_rows)
         self.tetromino = Tetromino(
             self.get_next_shape(), 
             self.sprites, 
@@ -145,6 +149,35 @@ class Game:
             #update score
             self.calculate_score(len(delete_rows))
 
+    def check_attack_row(self, nums):
+        dig_block = randint(0,9)
+        now_row = Row - 1
+        while nums:
+            
+            
+            self.field_data = [[0 for x in range(Columns)] for y in range(Row)]
+            for i in self.sprites:
+                i.pos.y -= 1
+                # if i.pos.y - nums < 0 :
+                #     self.gameover = True
+                # else:
+            # if not self.gameover:
+            
+            for i in range(Columns):
+                if i != dig_block:
+                    Block_two(self.sprites, (i , now_row), stack_block)
+                
+            # for i in self.sprites:
+            #     print(i.pos.x, i.pos.y)
+            for block in self.sprites: #更新field_data
+                # if  0 <= block.pos.y < Row and 0 <= block.pos.x < Columns:s
+                self.field_data[int(block.pos.y)][int(block.pos.x)] = block
+
+            nums -= 1
+            print(self.field_data)
+        self.attack_rows = 0
+          
+    
     def input(self):
         key = pygame.key.get_pressed()
 
@@ -192,7 +225,7 @@ class Game:
         #畫外框
         pygame.draw.rect(self.display_surface, Line_Color, self.rect, 2, 2)
 
-class Tetromino: #單一個磚塊
+class Tetromino: #一個形狀
     def __init__(self, shape, group, create_new_tetromino, field_data):
         #setup
         self.shape = shape
@@ -254,7 +287,7 @@ class Tetromino: #單一個磚塊
             for i, block in enumerate(self.blocks):
                 block.pos = new_block_positions[i]
 
-class Block(pygame.sprite.Sprite):
+class Block(pygame.sprite.Sprite):#單一個磚塊
     def __init__(self, group, pos, color):
         #general
         super().__init__(group)
@@ -287,6 +320,23 @@ class Block(pygame.sprite.Sprite):
         if y >= 0 and field_data[y][int(self.pos.x)]:
             return True
 
+    def update(self):
+        # self.rect = self.image.get_rect(topleft = self.pos * Cell_Size)
+        self.rect.topleft = self.pos * Cell_Size # 兩句話是一樣的意思
+
+class Block_two(pygame.sprite.Sprite):
+    def __init__(self, group, pos, color):
+        #general
+        super().__init__(group)
+        self.image = pygame.Surface((Cell_Size, Cell_Size))
+        self.image.fill(color)
+
+        #position
+        self.pos = pygame.Vector2(pos)
+        # x = self.pos.x * Cell_Size
+        # y = self.pos.y * Cell_Size
+        self.rect = self.image.get_rect(topleft = self.pos * Cell_Size)
+    
     def update(self):
         # self.rect = self.image.get_rect(topleft = self.pos * Cell_Size)
         self.rect.topleft = self.pos * Cell_Size # 兩句話是一樣的意思
