@@ -4,6 +4,7 @@ from timer import Timer
 from setting import * 
 from sys import exit
 import socket
+from random import randint
 
 class Game:
     gameover = False
@@ -68,7 +69,7 @@ class Game:
         
     
     def level_up(self):
-        print((self.start_time.timecheak() - self.start_time.first_start_time ) // 1000 % 60, "S")
+        # print((self.start_time.timecheak() - self.start_time.first_start_time ) // 1000 % 60, "S")
         if ((self.start_time.timecheak() - self.start_time.first_start_time ) // 1000)  % 60 == 0 and self.start_time.active:
             self.current_level += 1
             self.down_speed * 0.75
@@ -146,6 +147,54 @@ class Game:
             #update score
             self.calculate_score(len(delete_rows))
 
+    # def check_attack_row(self, nums):
+    #     if nums:
+    #         for i in self.sprites:
+    #             if i.pos.y - nums < 0 :
+    #                 self.gameover = True
+    #             else:
+    #                 i.pos.y -= nums
+
+    #         if not self.gameover:
+    #             self.field_data = [[0 for x in range(Columns)] for y in range(Row)]
+    #             dig_block = randint(0,9)
+    #             now_row = Row - 1
+    #             for j in range(nums):
+    #                 for i in range(0,9):
+    #                     if i != dig_block:
+    #                         Block(self.sprites, (now_row, i), stack_block)
+    #                 now_row -= 1
+    #             self.check_game_over()
+    #             if not self.gameover:
+    #                 for block in self.sprites: #更新field_data
+    #                     self.field_data[int(block.pos.y)][int(block.pos.x)] = block
+
+    def check_attack_row(self, nums):
+        if nums:
+            for i in self.sprites:
+                if i.pos.y - nums < 0:
+                    self.gameover = True
+                else:
+                    i.pos.y -= nums
+
+            if not self.gameover:
+                self.field_data = [[0 for x in range(Columns)] for y in range(Row)]
+                dig_block = randint(0, 9)
+                now_row = Row - 1
+                for j in range(nums):
+                    for i in range(Columns):  # 使用 Columns 來確保範圍在 0 到 Columns-1 之間
+                        if i != dig_block:
+                            Block(self.sprites, (now_row, i), stack_block)
+                    now_row -= 1
+
+                self.check_game_over()
+                if not self.gameover:
+                    for block in self.sprites:
+                        # 更新 field_data，確保 y 座標在有效範圍內
+                        y_coord = int(block.pos.y)
+                        if 0 <= y_coord < Row:
+                            self.field_data[y_coord][int(block.pos.x)] = block
+
     def input(self):
         key = pygame.key.get_pressed()
 
@@ -193,7 +242,7 @@ class Game:
         #畫外框
         pygame.draw.rect(self.display_surface, Line_Color, self.rect, 2, 2)
 
-class Tetromino: #單一個磚塊
+class Tetromino: #一個形狀
     def __init__(self, shape, group, create_new_tetromino, field_data):
         #setup
         self.shape = shape
@@ -255,7 +304,7 @@ class Tetromino: #單一個磚塊
             for i, block in enumerate(self.blocks):
                 block.pos = new_block_positions[i]
 
-class Block(pygame.sprite.Sprite):
+class Block(pygame.sprite.Sprite):#單一個磚塊
     def __init__(self, group, pos, color):
         #general
         super().__init__(group)

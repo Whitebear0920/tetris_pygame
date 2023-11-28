@@ -18,20 +18,21 @@ class date_process():
         
         self.Max_Bytes = 65535
         self.server_addr = ("127.0.0.1",57414)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         #取得自己的ip位置
         self.name = socket.gethostname()    #取代nickname
 
 
-        self.ip_address = socket.gethostbyname(self.name)
+        self.ip_address = (socket.gethostbyname(self.name), 57414)
 
         #自己的位置資料 預設port為57414
-        self.my_address = (self.ip_address, 57414)
+        # self.my_address = (self.ip_address, 57414)
 
         #對方的位置資料
         self.his_address = ("127.0.0.1", 57414)
 
         #socket 初始化
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        
         
         self.msgdict = {
             "type": 1,
@@ -45,12 +46,12 @@ class date_process():
 
         # 等待並接收Server傳回來的訊息，若為Enter Response則繼續下一步，否則繼續等待
         self.is_entered = False
-        while not is_entered:
+        while not self.is_entered:
             try:
-                self.data, address = self.sock.recvfrom(self.Max_Bytes)
-                msgdict = json.loads(data.decode('utf-8'))
-                if msgdict['type'] == 2:
-                    is_entered = True
+                self.data, self.address = self.sock.recvfrom(self.Max_Bytes)
+                self.msgdict = json.loads(self.data.decode('utf-8'))
+                if self.msgdict['type'] == 2:
+                    self.is_entered = True
                     print('成功進入伺服器!!!')
             except:
                 print("伺服器連線失敗,5秒後重試")
@@ -58,10 +59,10 @@ class date_process():
                     time.sleep(1)
                     print(".", end="",flush = True)
                 print()
-                data = json.dumps(msgdict).encode("utf-8")
-                self.sock.sendto(data, self.server_addr)
+                self.data = json.dumps(self.msgdict).encode("utf-8")
+                self.sock.sendto(self.data, self.server_addr)
 
-    def connect(self):
+    def connect(self): 
         return self.is_entered
 
     def send_message(self):

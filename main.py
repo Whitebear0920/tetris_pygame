@@ -9,7 +9,7 @@ from score import Score
 from preview import Preview
 from time import sleep
 from random import choice 
-from internet import date_process
+# from internet import date_process
 
 
 class Main:
@@ -29,7 +29,7 @@ class Main:
         self.game = Game(self.get_next_shape, self.update_score) 
         self.score  = Score()
         self.preview = Preview()
-        self.internet = date_process()
+        # self.internet = date_process()
         
 
 
@@ -74,6 +74,14 @@ class Main:
                 if (opkey[pygame.K_p]):
                     Start = False
                     print(Start)
+
+                #attack test
+                if(opkey[pygame.K_a]):
+                    x = choice([1,2,3,4])
+                    self.game.check_attack_row(x)
+                    print("i got attack!!")
+
+
             while ((not Start )and (not self.game.gameover)):
                 for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
 
