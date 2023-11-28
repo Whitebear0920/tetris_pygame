@@ -6,7 +6,6 @@ from sys import exit
 import socket
 
 class Game:
-    gameover = False
     def __init__(self, get_next_shape, update_score):
 
         #general setup
