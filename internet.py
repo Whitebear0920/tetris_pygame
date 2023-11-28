@@ -5,9 +5,9 @@ import os
 import time
 """
 data = {
-            "GameOver": False,
-            "Player": 1,
-            "ClearLine": 0
+            "player" : ,
+            "type" : ,
+            "value" :
         }
 
 """
@@ -21,7 +21,6 @@ class date_process():
         #取得自己的ip位置
         self.name = socket.gethostname()    #取代nickname
 
-
         self.ip_address = socket.gethostbyname(self.name)
 
         #自己的位置資料 預設port為57414
@@ -33,24 +32,23 @@ class date_process():
         #socket 初始化
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
+    def connect(self):
         self.msgdict = {
-            "type": 1,
+            "type": "connecting",
             "nickname": self.name
         }
-        
-        # 轉成JSON字串，再轉成bytes
         self.data = json.dumps(self.msgdict).encode('utf-8')
         # 將Enter Request送到Server
         self.sock.sendto(self.data, self.server_addr)
 
         # 等待並接收Server傳回來的訊息，若為Enter Response則繼續下一步，否則繼續等待
         self.is_entered = False
-        while not is_entered:
+        while not self.is_entered:
             try:
-                self.data, address = self.sock.recvfrom(self.Max_Bytes)
-                msgdict = json.loads(data.decode('utf-8'))
-                if msgdict['type'] == 2:
-                    is_entered = True
+                self.data, self.address = self.sock.recvfrom(self.Max_Bytes)
+                self.msgdict = json.loads(data.decode('utf-8'))
+                if self.msgdict['type'] == "connected":
+                    self.is_entered = True
                     print('成功進入伺服器!!!')
             except:
                 print("伺服器連線失敗,5秒後重試")
@@ -58,11 +56,8 @@ class date_process():
                     time.sleep(1)
                     print(".", end="",flush = True)
                 print()
-                data = json.dumps(msgdict).encode("utf-8")
+                data = json.dumps(self.msgdict).encode("utf-8")
                 self.sock.sendto(data, self.server_addr)
-
-    def connect(self):
-        return self.is_entered
 
     def send_message(self):
         print("開始執行send message")
