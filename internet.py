@@ -3,11 +3,12 @@ import json
 import socket
 import os
 import time
+from game import Game
 """
 data = {
-            "GameOver": False,
-            "Player": 1,
-            "ClearLine": 0
+            "player" : ,
+            "type" : ,
+            "value" :
         }
 
 """
@@ -18,15 +19,14 @@ class date_process():
         
         self.Max_Bytes = 65535
         self.server_addr = ("127.0.0.1",57414)
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         #取得自己的ip位置
         self.name = socket.gethostname()    #取代nickname
 
 
-        self.ip_address = (socket.gethostbyname(self.name), 57414)
+        self.ip_address = socket.gethostbyname(self.name)
 
         #自己的位置資料 預設port為57414
-        # self.my_address = (self.ip_address, 57414)
+        self.my_address = (self.ip_address, 57414)
 
         #對方的位置資料
         self.his_address = ("127.0.0.1", 57414)
@@ -34,24 +34,22 @@ class date_process():
         #socket 初始化
         
         
+    def connect(self):
         self.msgdict = {
-            "type": 1,
-            "nickname": self.name
+            "type": "connecting"
         }
-        
-        # 轉成JSON字串，再轉成bytes
         self.data = json.dumps(self.msgdict).encode('utf-8')
         # 將Enter Request送到Server
-        self.sock.sendto(self.data, self.server_addr)
+        self.sock.sendto(self.data, self.Server_addr)
 
         # 等待並接收Server傳回來的訊息，若為Enter Response則繼續下一步，否則繼續等待
         self.is_entered = False
         while not self.is_entered:
             try:
-                self.data, self.address = self.sock.recvfrom(self.Max_Bytes)
-                self.msgdict = json.loads(self.data.decode('utf-8'))
-                if self.msgdict['type'] == 2:
-                    self.is_entered = True
+                self.data, address = self.sock.recvfrom(self.Max_Bytes)
+                msgdict = json.loads(data.decode('utf-8'))
+                if msgdict['type'] == 2:
+                    is_entered = True
                     print('成功進入伺服器!!!')
             except:
                 print("伺服器連線失敗,5秒後重試")
@@ -59,10 +57,10 @@ class date_process():
                     time.sleep(1)
                     print(".", end="",flush = True)
                 print()
-                self.data = json.dumps(self.msgdict).encode("utf-8")
-                self.sock.sendto(self.data, self.server_addr)
+                data = json.dumps(msgdict).encode("utf-8")
+                self.sock.sendto(data, self.server_addr)
 
-    def connect(self): 
+    def connect(self):
         return self.is_entered
 
     def send_message(self):
@@ -96,19 +94,17 @@ class date_process():
         print("開始執行recv_message")
         while(True):
             # 接收來自Server傳來的訊息
-            data, address = self.sock.recvfrom(self.Max_Bytes)
-            self.msgdict = json.loads(data.decode('utf-8'))
-            # 依照type欄位的值做對應的動作
-            ## Message Response(4)：這是之前Message Request的回應訊息
-            if self.msgdict['type'] == 4:
-                # 不需做任何處理
-                print('Get Message Response from server.') # 除錯用
-                pass 
-            ## Message Transfer(5)：這是其他Client所發布的訊息
-            if self.msgdict['type'] == 5:
-                print('Get Message Transfer from server.') # 除錯用
-                # 以「nickname: message content」的格式印出
-                print(self.msgdict['nickname'] + ': ' + self.msgdict['message'])
+            self.Recdata, self.address = self.sock.recvfrom(self.Max_Bytes)
+            self.Recdata = json.loads(self.Recdata.decode('utf-8'))
+            if self.Recdata["type"] == "GameOver":
+                if self.Recdata["value"] == True:
+                    self.game.gameover = True
+                    print("win")
+            elif self.Recdata["type"] == "Attack":
+                print("got attack!")
+
+            
+            
 
 
 

@@ -29,7 +29,7 @@ class Main:
         self.game = Game(self.get_next_shape, self.update_score) 
         self.score  = Score()
         self.preview = Preview()
-        # self.internet = date_process()
+        self.internet = date_process()
         
 
 
@@ -45,7 +45,6 @@ class Main:
 
     def run(self):
         Start = True
-        gameover = False
         while True:
             while Start:
                 for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件

@@ -7,7 +7,6 @@ import socket
 from random import randint
 
 class Game:
-    gameover = False
     def __init__(self, get_next_shape, update_score):
 
         #general setup
