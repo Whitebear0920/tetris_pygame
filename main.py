@@ -58,22 +58,21 @@ class Main:
                 self.game.attack_rows += self.Recdata["value"]
             elif self.Recdata["type"] == "Start":
                 print("Game Start!")
-                self.Start = self.Recdata["value"]
+                self.game.Start = self.Recdata["value"]
             elif self.Recdata["type"] == "Time":
                 print("{}".format(self.Recdata["value"]))
 
     def main_run(self):
-        Pause = False
-        self.Start = False
+        self.Pause = False
         self.Dispay_Surface.fill(Gray)
         while True:
-            while not self.Start:
+            while not self.game.Start:
                 for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
 
                     if event.type == pygame.QUIT: #當遊戲狀態為停止時 離開遊戲
                         pygame.quit() #exit everything 
                         exit()
-            while not Pause:
+            while not self.Pause:
                 for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
 
                     if event.type == pygame.QUIT: #當遊戲狀態為停止時 離開遊戲
@@ -92,15 +91,15 @@ class Main:
 
                 #gameover
                 if self.game.gameover:
-                    Pause = True
+                    self.Pause = True
                     print("press 'Q' to exit the game")
                 
                 #pause
                 
                 opkey = pygame.key.get_pressed()
                 if (opkey[pygame.K_p]):
-                    Pause = True
-                    print(Pause)
+                    self.Pause = True
+                    print(self.Pause)
                 
                 #attack test
                 #if(opkey[pygame.K_a]):
@@ -111,7 +110,7 @@ class Main:
                 #    print("i got attack!!")
 
 
-            while ((Pause)and (not self.game.gameover)):
+            while ((self.Pause)and (not self.game.gameover)):
                 for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
 
                     if event.type == pygame.QUIT: #當遊戲狀態為停止時 離開遊戲
@@ -119,8 +118,8 @@ class Main:
                         exit()
                 opkey = pygame.key.get_pressed()
                 if (opkey[pygame.K_o]):
-                    Pause = False
-                    print(Pause)
+                    self.Pause = False
+                    print(self.Pause)
             while self.game.gameover:
                 for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
 
