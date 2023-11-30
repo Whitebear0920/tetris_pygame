@@ -1,6 +1,7 @@
 import socket
 import threading
 import json
+import time
 
 s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 start = False
@@ -28,6 +29,15 @@ while True:
             if len(players) == 2: #when players enought,send the start mesg
                 print("players enought")
                 print(players)
+                for j in  range(1,4):
+                    data = data = {
+                    "type" : "Time",
+                    "value" : j
+                    }
+                    data = json.dumps(data).encode()
+                    for i in players:
+                        s.sendto(data,i)
+                    time.sleep(1)
                 data = {
                     "type" : "Start",
                     "value" : True

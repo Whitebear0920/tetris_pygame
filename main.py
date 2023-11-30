@@ -56,11 +56,23 @@ class Main:
             elif self.Recdata["type"] == "Attack": #Attack Line
                 print("got attack! {}".format(self.Recdata["value"]))
                 self.game.attack_rows += self.Recdata["value"]
+            elif self.Recdata["type"] == "Start":
+                print("Game Start!")
+                self.Start = self.Recdata["value"]
+            elif self.Recdata["type"] == "Time":
+                print("{}".format(self.Recdata["value"]))
 
     def main_run(self):
         Pause = False
+        self.Start = False
         self.Dispay_Surface.fill(Gray)
         while True:
+            while not self.Start:
+                for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
+
+                    if event.type == pygame.QUIT: #當遊戲狀態為停止時 離開遊戲
+                        pygame.quit() #exit everything 
+                        exit()
             while not Pause:
                 for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
 
