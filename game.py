@@ -19,7 +19,7 @@ class Game:
         self.get_next_shape = get_next_shape
         self.update_score = update_score
 
-        self.attack_rows = 1
+        self.attack_rows =choice([0,1,2,3,4])
         #lines
         self.line_surface = self.surface.copy()
         self.line_surface.fill((0, 255, 0))
