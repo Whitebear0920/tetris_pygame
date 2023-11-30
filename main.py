@@ -1,6 +1,6 @@
 from setting import *
 from sys import exit
-import socket
+import threading
 import json
 
 # Components
@@ -9,7 +9,6 @@ from score import Score
 from preview import Preview
 from time import sleep
 from random import choice 
-# from internet import date_process
 
 
 class Main:
@@ -29,7 +28,6 @@ class Main:
         self.game = Game(self.get_next_shape, self.update_score) 
         self.score  = Score()
         self.preview = Preview()
-        # self.internet = date_process()
         
 
 
@@ -43,10 +41,27 @@ class Main:
         self.next_shapes.append(choice(list(Tetorminos.keys())))
         return next_shape
 
-    def run(self):
-        Start = True
+    def recv_message(self):
+        print("start")
+        self.game.connect()
+        print("recv_message Start")
+        while(True):
+            # 接收來自Server傳來的訊息
+            self.Recdata, self.address = self.game.sock.recvfrom(self.game.Max_Bytes)
+            self.Recdata = json.loads(self.Recdata.decode('utf-8'))
+            if self.Recdata["type"] == "GameOver": #GameOver
+                if self.Recdata["value"] == True:
+                    self.game.gameover = True
+                    print("win")
+            elif self.Recdata["type"] == "Attack": #Attack Line
+                print("got attack! {}".format(self.Recdata["value"]))
+                self.game.attack_rows += self.Recdata["value"]
+
+    def main_run(self):
+        Pause = False
+        self.Dispay_Surface.fill(Gray)
         while True:
-            while Start:
+            while not Pause:
                 for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
 
                     if event.type == pygame.QUIT: #當遊戲狀態為停止時 離開遊戲
@@ -65,25 +80,26 @@ class Main:
 
                 #gameover
                 if self.game.gameover:
-                    Start = False
+                    Pause = True
                     print("press 'Q' to exit the game")
                 
                 #pause
+                
                 opkey = pygame.key.get_pressed()
                 if (opkey[pygame.K_p]):
-                    Start = False
-                    print(Start)
-
+                    Pause = True
+                    print(Pause)
+                
                 #attack test
-                if(opkey[pygame.K_a]):
-                    x = choice([1,2,3,4])
-                    print(x)
-                    sleep(1)
-                    self.game.check_attack_row(x)
-                    print("i got attack!!")
+                #if(opkey[pygame.K_a]):
+                #    x = choice([1,2,3,4])
+                #    print(x)
+                #    sleep(1)
+                #    self.game.check_attack_row(x)
+                #    print("i got attack!!")
 
 
-            while ((not Start )and (not self.game.gameover)):
+            while ((Pause)and (not self.game.gameover)):
                 for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
 
                     if event.type == pygame.QUIT: #當遊戲狀態為停止時 離開遊戲
@@ -91,8 +107,8 @@ class Main:
                         exit()
                 opkey = pygame.key.get_pressed()
                 if (opkey[pygame.K_o]):
-                    Start = True
-                    print(Start)
+                    Pause = False
+                    print(Pause)
             while self.game.gameover:
                 for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
 
@@ -104,8 +120,15 @@ class Main:
                     print("END!")
                     pygame.quit()
                     exit()
-            
 
+    def start(self):
+        self.threadRec = threading.Thread(target = self.recv_message)
+        self.threadRec.start()
+        self.thredMain = threading.Thread(target = self.main_run())
+        self.thredMain.start()
+        self.threadRec.join()
+        self.thredMain.join()
 if __name__ == "__main__":
     main = Main()
-    main.run()
+    main.start()
+    

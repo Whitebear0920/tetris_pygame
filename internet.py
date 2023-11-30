@@ -6,7 +6,6 @@ import time
 from game import Game
 """
 data = {
-            "player" : ,
             "type" : ,
             "value" :
         }
@@ -16,7 +15,7 @@ data = {
 class date_process():
 
     def __init__(self):
-        self.game = Game()
+        #self.game = Game()
         self.Max_Bytes = 65565
         self.is_entered = False
         #server
@@ -38,12 +37,12 @@ class date_process():
         while not self.is_entered:
             try:
                 self.data, self.address = self.sock.recvfrom(self.Max_Bytes)
-                self.msgdict = json.loads(data.decode('utf-8'))
+                self.msgdict = json.loads(self.data.decode('utf-8'))
                 if self.msgdict['type'] == "connected":
                     self.is_entered = True
-                    print('成功進入伺服器!!!')
+                    print('connect successfully!!!')
             except:
-                print("伺服器連線失敗,5秒後重試")
+                print("Server connection failed, try again in 5 seconds")
                 for i in range(5):
                     time.sleep(1)
                     print(".", end="",flush = True)
@@ -60,17 +59,19 @@ class date_process():
         self.sock.sendto(self.Senddata,self.Server_addr)
 
     def recv_message(self):
-        print("開始執行recv_message")
+        print("recv_message Start")
         while(True):
             # 接收來自Server傳來的訊息
             self.Recdata, self.address = self.sock.recvfrom(self.Max_Bytes)
             self.Recdata = json.loads(self.Recdata.decode('utf-8'))
             if self.Recdata["type"] == "GameOver": #GameOver
                 if self.Recdata["value"] == True:
-                    self.game.gameover = True
+                    #self.game.gameover = True
                     print("win")
             elif self.Recdata["type"] == "Attack": #Attack Line
                 print("got attack!")
+                #self.game.check_attack_row(self.Recdata["value"])
+
 
             
             

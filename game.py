@@ -4,11 +4,23 @@ from pygame.sprite import Group
 from timer import Timer
 from setting import * 
 from sys import exit
+import json
 import socket
 from random import randint
+from time import sleep
 
 class Game:
     def __init__(self, get_next_shape, update_score):
+
+        #connection
+        self.Max_Bytes = 65565
+        self.is_entered = False
+        #server
+        self.Server_IP="127.0.0.1"
+        self.Server_port = 57414
+        self.Server_addr = ((self.Server_IP,self.Server_port))
+        #socket 初始化
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         #general setup
         self.surface = pygame.Surface((Game_Width, Game_Height)) #創建一個對象
@@ -19,13 +31,15 @@ class Game:
         self.get_next_shape = get_next_shape
         self.update_score = update_score
 
-        self.attack_rows = 1
+        self.attack_rows = 0
         #lines
         self.line_surface = self.surface.copy()
         self.line_surface.fill((0, 255, 0))
         self.line_surface.set_colorkey((0, 255, 0))#將顏色轉為透明
         self.line_surface.set_alpha(120)
         
+        #attack
+        self.attack_bimu = 0
         #tetromino
         self.field_data = [[0 for x in range(Columns)] for y in range(Row)]
         self.tetromino = Tetromino(
@@ -52,7 +66,8 @@ class Game:
         self.current_score = 0
         self.current_lines = 0
 
-        #gameover
+        #pause
+        self.Start = False
         self.gameover = False
 
     def calculate_score(self, num_lines):
@@ -86,7 +101,8 @@ class Game:
         for block in self.tetromino.blocks:
             if block.pos.y < 0:
                 self.gameover = True
-                print("Game Over")
+                self.send_message("GameOver",True)
+                print("Lose")
 
     def Game_over(self):
         if self.gameover:
@@ -128,7 +144,9 @@ class Game:
         for i, row in enumerate(self.field_data):
             if all(row):
                 delete_rows.append(i)
-
+                self.attack_bimu += 1
+        self.send_message("Attack",self.attack_bimu)
+        self.attack_bimu = 0
         if delete_rows:
             for delete_row in delete_rows: #要刪除的行
 
@@ -177,6 +195,53 @@ class Game:
             print(self.field_data)
         self.attack_rows = 0
           
+    def connect(self):
+        self.msgdict = {
+            "type": "connecting"
+        }
+        self.data = json.dumps(self.msgdict).encode('utf-8')
+        # 將Enter Request送到Server
+        self.sock.sendto(self.data, self.Server_addr)
+
+        # 等待並接收Server傳回來的訊息，若為Enter Response則繼續下一步，否則繼續等待
+        while not self.is_entered:
+            try:
+                self.data, self.address = self.sock.recvfrom(self.Max_Bytes)
+                self.msgdict = json.loads(self.data.decode('utf-8'))
+                if self.msgdict['type'] == "connected":
+                    self.is_entered = True
+                    print('connect successfully!!!')
+            except:
+                print("Server connection failed, try again in 5 seconds")
+                for i in range(5):
+                    sleep(1)
+                    print(".", end="",flush = True)
+                print()
+                data = json.dumps(self.msgdict).encode("utf-8")
+                self.sock.sendto(data, self.Server_addr)
+    
+    def send_message(self,type,value):
+        self.Senddata ={
+            "type" : type,
+            "value" : value
+        }
+        self.Senddata = json.dumps(self.Senddata).encode()
+        self.sock.sendto(self.Senddata,self.Server_addr)
+
+    #def recv_message(self):
+    #    self.connect()
+    #    print("recv_message Start")
+    #    while(True):
+    #        # 接收來自Server傳來的訊息
+    #        self.Recdata, self.address = self.sock.recvfrom(self.Max_Bytes)
+    #        self.Recdata = json.loads(self.Recdata.decode('utf-8'))
+    #        if self.Recdata["type"] == "GameOver": #GameOver
+    #            if self.Recdata["value"] == True:
+    #                self.gameover = True
+    #                print("win")
+    #        elif self.Recdata["type"] == "Attack": #Attack Line
+    #            print("got attack!")
+    #            self.attack_rows += self.Recdata["value"]
     
     def input(self):
         key = pygame.key.get_pressed()

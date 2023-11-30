@@ -19,12 +19,23 @@ while True:
         print("someone leave")
         continue
     data = json.loads(data.decode())
-    if data["type"] == "connecting":
-        players.append(address)
-        data = {"type":"connected"}
-        data = json.dumps(data).encode()
-        s.sendto(data,address)
-    elif len(players) == 2:
+    if len(players) < 2: #when players less than two
+        if data["type"] == "connecting":
+            players.append(address)
+            data = {"type":"connected"}
+            data = json.dumps(data).encode()
+            s.sendto(data,address)
+            if len(players) == 2: #when players enought,send the start mesg
+                print("players enought")
+                print(players)
+                data = {
+                    "type" : "Start",
+                    "value" : True
+                }
+                data = json.dumps(data).encode()
+                for i in players:
+                    s.sendto(data,i)
+    elif len(players) == 2: #exchange two players's data
         data = json.dumps(data).encode()
         for i in players:
             if i != address:
