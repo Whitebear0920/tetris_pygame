@@ -51,6 +51,7 @@ class Main:
             self.Recdata = json.loads(self.Recdata.decode('utf-8'))
             if self.Recdata["type"] == "GameOver": #GameOver
                 if self.Recdata["value"] == True:
+                    self.game.GameStartMsg = "You Win \nPress 'Q' to exit the game"
                     self.game.gameover = True
                     print("win")
             elif self.Recdata["type"] == "Attack": #Attack Line
@@ -61,6 +62,7 @@ class Main:
                 self.game.Start = self.Recdata["value"]
             elif self.Recdata["type"] == "Time":
                 print("{}".format(self.Recdata["value"]))
+                self.game.GameStartMsg = "Game will start in " + str(4-self.Recdata['value'])
 
     def main_run(self):
         self.Pause = False
@@ -68,10 +70,14 @@ class Main:
         while True:
             while not self.game.Start:
                 for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
-
                     if event.type == pygame.QUIT: #當遊戲狀態為停止時 離開遊戲
                         pygame.quit() #exit everything 
                         exit()
+                self.Dispay_Surface.fill(Gray)
+                self.game.GameStart()
+                pygame.display.update()
+                self.clock.tick(60) #控制遊戲幀數
+
             while not self.Pause:
                 for event in pygame.event.get(): #pygame.event.get() 取得當前發生的事件
 
@@ -131,6 +137,10 @@ class Main:
                     print("END!")
                     pygame.quit()
                     exit()
+                self.Dispay_Surface.fill(Gray)
+                self.game.GameStart()
+                pygame.display.update()
+                self.clock.tick(60) #控制遊戲幀數
 
     def start(self):
         self.threadRec = threading.Thread(target = self.recv_message)

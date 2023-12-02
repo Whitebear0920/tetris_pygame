@@ -70,6 +70,9 @@ class Game:
         self.Start = False
         self.gameover = False
 
+        #GameStart
+        self.GameStartMsg = "waitting for connect"
+
     def calculate_score(self, num_lines):
         self.current_lines += num_lines
         self.current_score += Score_Data[num_lines] * self.current_level
@@ -102,13 +105,8 @@ class Game:
             if block.pos.y < 0:
                 self.gameover = True
                 self.send_message("GameOver",True)
+                self.GameStartMsg = "You Lose \nPress 'Q' to exit the game"
                 print("Lose")
-
-    def Game_over(self):
-        if self.gameover:
-            return True
-        else:
-            return False
 
     def create_new_tetromino(self):
         
@@ -211,12 +209,15 @@ class Game:
                 if self.msgdict['type'] == "connected":
                     self.is_entered = True
                     print('connect successfully!!!')
+                    self.GameStartMsg = 'connect successfully!!! \n\n waitting for other player!'
             except:
                 print("Server connection failed, try again in 5 seconds")
                 for i in range(5):
                     sleep(1)
+                    self.GameStartMsg += "."
                     print(".", end="",flush = True)
                 print()
+                self.GameStartMsg = self.GameStartMsg.replace(".","",5)
                 data = json.dumps(self.msgdict).encode("utf-8")
                 self.sock.sendto(data, self.Server_addr)
     
@@ -227,21 +228,6 @@ class Game:
         }
         self.Senddata = json.dumps(self.Senddata).encode()
         self.sock.sendto(self.Senddata,self.Server_addr)
-
-    #def recv_message(self):
-    #    self.connect()
-    #    print("recv_message Start")
-    #    while(True):
-    #        # 接收來自Server傳來的訊息
-    #        self.Recdata, self.address = self.sock.recvfrom(self.Max_Bytes)
-    #        self.Recdata = json.loads(self.Recdata.decode('utf-8'))
-    #        if self.Recdata["type"] == "GameOver": #GameOver
-    #            if self.Recdata["value"] == True:
-    #                self.gameover = True
-    #                print("win")
-    #        elif self.Recdata["type"] == "Attack": #Attack Line
-    #            print("got attack!")
-    #            self.attack_rows += self.Recdata["value"]
     
     def input(self):
         key = pygame.key.get_pressed()
@@ -273,6 +259,27 @@ class Game:
         if self.down_pressed and not key[pygame.K_DOWN]:
             self.down_pressed = False
             self.timers["vertical move"].duration = self.down_speed
+
+    def GameStart(self):
+        self.GameStart_font = pygame.font.Font(None, 36)
+
+        # 分解文字為多行
+        self.GameStart_lines = self.GameStartMsg.split('\n')
+
+        # 計算總高度
+        self.GameStart_total_height = sum([self.GameStart_font.render(GameStart_line, True, Red).get_height() for GameStart_line in self.GameStart_lines])
+
+        # 設定總高度和行數的偏移量
+        self.GameStart_offset_y = (Window_Height - self.GameStart_total_height) // 2
+        self.GameStart_line_spacing = 5  # 設定行間距
+
+        # 逐行繪製文字
+        for self.GameStart_line in self.GameStart_lines:
+            self.GameStart_text_surface = self.GameStart_font.render(self.GameStart_line, True, Red)
+            self.GameStart_text_rect = self.GameStart_text_surface.get_rect()
+            self.GameStart_text_rect.center = (Window_Width // 2, self.GameStart_offset_y + self.GameStart_text_rect.height // 2)
+            self.display_surface.blit(self.GameStart_text_surface, self.GameStart_text_rect)
+            self.GameStart_offset_y += self.GameStart_text_rect.height + self.GameStart_line_spacing
         
     def run(self):
         #update
