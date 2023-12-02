@@ -260,7 +260,7 @@ class Game:
             self.down_pressed = False
             self.timers["vertical move"].duration = self.down_speed
 
-    def GameStart(self):
+    def GameStart(self): #遊戲開始跟結束時的文字顯示
         self.GameStart_font = pygame.font.Font(None, 36)
 
         # 分解文字為多行

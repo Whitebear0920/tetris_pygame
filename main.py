@@ -57,10 +57,10 @@ class Main:
             elif self.Recdata["type"] == "Attack": #Attack Line
                 print("got attack! {}".format(self.Recdata["value"]))
                 self.game.attack_rows += self.Recdata["value"]
-            elif self.Recdata["type"] == "Start":
+            elif self.Recdata["type"] == "Start": #Game Start
                 print("Game Start!")
                 self.game.Start = self.Recdata["value"]
-            elif self.Recdata["type"] == "Time":
+            elif self.Recdata["type"] == "Time": #Game Start time 
                 print("{}".format(self.Recdata["value"]))
                 self.game.GameStartMsg = "Game will start in " + str(4-self.Recdata['value'])
 
