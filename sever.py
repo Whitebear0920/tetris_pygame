@@ -30,7 +30,7 @@ while True:
                 print("players enought")
                 print(players)
                 for j in  range(1,4): #開始倒數
-                    data = data = {
+                    data = {
                     "type" : "Time",
                     "value" : j
                     }
